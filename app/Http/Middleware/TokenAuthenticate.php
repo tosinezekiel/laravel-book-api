@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 use App\User;
 use Closure;
 
-class Admin
+class TokenAuthenticate
 {
     /**
      * Handle an incoming request.
@@ -15,14 +15,15 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-            $userRoles = User::find($request->user_id)->roles()->pluck('role_name');
-            if(!$userRoles->contains('admin')){
+        
+            $user = User::where('id',$request->user_id)->Where('remember_token',$request->token)->exists();
+            if(!$user){
                     $response = [
                         'status' => 422,
-                        'errors' => 'Invalid access'
+                        'errors' => 'Invalid access token'
                     ];
-                return response()->json($response);
+            return response()->json($response);
             }
-        return $next($request);
+            return $next($request);
     }
 }

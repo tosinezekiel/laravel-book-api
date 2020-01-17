@@ -22,11 +22,13 @@ Route::get('/books', 'BookController@index');
 Route::get('/books/{book}', 'BookController@show');
 
 
-Route::group(['middleware' => 'auth:api'], function(){
+// Route::group(['middleware' => 'auth:api'], function(){
     Route::group(['middleware' => 'admin'], function(){
-    	Route::post('/books', 'BookController@store');
+    	Route::group(['middleware' => 'token'], function(){
+    		Route::post('/books', 'BookController@store');
+    	 });
     });
-});
+// });
 
 
 //  Route::group([
